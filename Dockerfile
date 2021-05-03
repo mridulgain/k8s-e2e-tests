@@ -10,6 +10,6 @@ WORKDIR /root/test-infra/
 RUN GO111MODULE=on go install ./kubetest
 #
 WORKDIR /root/kubernetes 
-ENV KUBECONFIG=$HOME/.kube/config
+ENV KUBECONFIG=/root/.kube/config
 ENTRYPOINT ["kubetest"]
 CMD ["--help"]
