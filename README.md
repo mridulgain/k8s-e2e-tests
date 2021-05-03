@@ -18,3 +18,6 @@ sudo docker run  -v /etc/kubernetes/admin.conf:/root/.kube/config  mridulgain/ku
 ## Know more about
 + [```Kubetest```](https://github.com/kubernetes/test-infra/tree/master/kubetest), the canonical way to run e2e tests.
 + More examples of ```kubetest``` from [kubernetes community doc](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-testing/e2e-tests.md)
+## Repositories in ```src/```
++ [kubernetes](https://github.com/kubernetes/kubernetes)
++ [test-infra](https://github.com/kubernetes/test-infra)
