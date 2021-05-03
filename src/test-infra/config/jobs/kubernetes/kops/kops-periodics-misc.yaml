@@ -1,0 +1,70 @@
+periodics:
+- interval: 30m
+  name: ci-kops-build
+  labels:
+    preset-service-account: "true"
+    preset-dind-enabled: "true"
+  spec:
+    containers:
+    - image: gcr.io/k8s-testimages/kubekins-e2e:v20210426-51fd28e-experimental
+      args:
+      - --repo=k8s.io/kops
+      - --repo=k8s.io/release
+      - --root=/go/src
+      - --timeout=30
+      - --scenario=execute
+      - --
+      - make
+      - gcs-publish-ci
+      - GCS_LOCATION=gs://kops-ci/bin
+      # docker-in-docker needs privileged mode
+      securityContext:
+        privileged: true
+  annotations:
+    testgrid-dashboards: sig-cluster-lifecycle-kops, kops-presubmits
+    testgrid-tab-name: kops-build
+    testgrid-alert-email: release-team@kubernetes.io
+- interval: 2h
+  name: e2e-kops-aws-misc-upgrade
+  always_run: false
+  labels:
+    preset-service-account: "true"
+    preset-aws-ssh: "true"
+    preset-aws-credential: "true"
+    preset-bazel-scratch-dir: "true"
+    preset-bazel-remote-cache-enabled: "true"
+    preset-dind-enabled: "true"
+    preset-e2e-platform-aws: "true"
+  decorate: true
+  decoration_config:
+    timeout: 2h
+  extra_refs:
+  - org: kubernetes
+    repo: kops
+    base_ref: master
+    workdir: true
+    path_alias: k8s.io/kops
+  spec:
+    containers:
+    - image: gcr.io/k8s-testimages/kubekins-e2e:latest-experimental
+      imagePullPolicy: Always
+      command:
+      - runner.sh
+      args:
+      - ./tests/e2e/scenarios/upgrade/run-test
+      env:
+      - name: CLOUD_PROVIDER
+        value: aws
+      - name: CLUSTER_NAME
+        value: e2e-f9b0e6b3f9-bb3c3.test-cncf-aws.k8s.io
+      - name: KOPS_STATE_STORE
+        value: s3://k8s-kops-prow
+      securityContext:
+        privileged: true
+      resources:
+        requests:
+          memory: "6Gi"
+  annotations:
+    testgrid-dashboards: sig-cluster-lifecycle-kops, google-aws, kops-misc, kops-kubetest2
+    testgrid-days-of-results: "30"
+    testgrid-tab-name: kops-aws-upgrade
