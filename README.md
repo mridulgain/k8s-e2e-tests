@@ -7,9 +7,9 @@ $ sudo docker run mridulgain/kubetest
 ```
 $ sudo docker run -v /path/to/kubeconfig:/root/.kube/config mridulgain/kubetest --test
 ```
-+ Run a specific test, e.g You want to run only [this](https://github.com/kubernetes/kubernetes/blob/release-1.21/test/e2e/network/dual_stack.go) testcase where we check the dual stack functionality on an existing cluster running k8s v1.21.0.
++ Run a specific test, e.g You want to run only this [testcase from kubernetes repo](https://github.com/kubernetes/kubernetes/blob/release-1.21/test/e2e/network/dual_stack.go) where we check the dual stack functionality, on an existing cluster running k8s v1.21.0. (Remember to provide the ```kubeconfig``` file location)
 ```
-sudo docker run  -v /etc/kubernetes/admin.conf:/root/.kube/config  mridulgain/kubetest:latest  \
+sudo docker run  -v /path/to/kubeconfig:/root/.kube/config  mridulgain/kubetest:latest  \
 --test \
 --provider=local \
 --extract=v1.21.0 \
